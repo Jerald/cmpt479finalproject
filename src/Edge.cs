@@ -1,3 +1,6 @@
+namespace Stater
+{
+    
 public class Edge {
     public readonly string fromIdentifier;
     public readonly string toIdentifier;
@@ -8,4 +11,6 @@ public class Edge {
         this.toIdentifier = toIdentifier;
         this.data = data;
     }
+}
+
 }

@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 
+namespace Stater
+{
+
 public class Node {
 
     private Dictionary<string, Edge> inEdges;
@@ -38,4 +41,6 @@ public class Node {
             identifier = value;
         }
     }
+}
+
 }

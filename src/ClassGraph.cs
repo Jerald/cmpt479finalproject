@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 
+namespace Stater
+{
+    
 public class ClassGraph {
     Dictionary<string, Node> nodes;
 
@@ -30,5 +33,7 @@ public class ClassGraph {
     public Dictionary<string, Edge>.ValueCollection getOutgoingEdges(string identifier) {
         return nodes[identifier].OutEdges.Values;
     }
+
+}
 
 }
