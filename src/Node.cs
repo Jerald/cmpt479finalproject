@@ -13,12 +13,12 @@ public class Node {
         this.ID = ID;
     }
 
-    public Dictionary<string, Edge>.ValueCollection GetIncoming()
+    public ICollection<Edge> GetIncoming()
     {
         return this.incoming.Values;
     }
 
-    public Dictionary<string, Edge>.ValueCollection GetOutgoing()
+    public ICollection<Edge> GetOutgoing()
     {
         return this.outgoing.Values;
     }

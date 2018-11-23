@@ -15,6 +15,11 @@ public class ClassGraph {
         nodes.Remove(ID);
     }
 
+    public ICollection<Node> GetNodes()
+    {
+        return nodes.Values;
+    }
+
     public void AddEdge(Edge edge) {
         // Attach edge to its nodes
         nodes[edge.From].AddOutgoing(edge);
@@ -28,12 +33,16 @@ public class ClassGraph {
         nodes[edge.To].RemoveIncoming(edge);
     }
 
-    public Dictionary<string, Edge>.ValueCollection GetIncoming(string ID) {
+    public ICollection<Edge> GetIncoming(string ID) {
         return nodes[ID].GetIncoming();
     }
 
-    public Dictionary<string, Edge>.ValueCollection GetOutgoing(string ID) {
+    public ICollection<Edge> GetOutgoing(string ID) {
         return nodes[ID].GetOutgoing();
+    }
+
+    public bool ContainsNode(string ID){
+        return nodes.ContainsKey(ID);
     }
 
 }
