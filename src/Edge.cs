@@ -14,7 +14,7 @@ public class Edge {
 
     public override string ToString()
     {
-        string output = "From: '" + this.From + "'    To: '" + this.To + "'    Data: '" + Data.ToString() + "'";
+        string output = "{ from: '" + this.From + "', to: '" + this.To + "', data: '" + Data.ToString() + "' }";
         return output;
     }
 }
