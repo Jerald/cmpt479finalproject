@@ -1,15 +1,24 @@
+using System.Collections;
+using System.Collections.Generic;
+
 namespace Stater.Graph
 {
     
 public class Edge {
     public readonly string From;
     public readonly string To;
-    public readonly System.Object Data;
+    public readonly IDictionary<string, object> Data = new Dictionary<string, object>();
 
-    public Edge(string from, string to, System.Object data) {
+    public Edge(string from, string to, KeyValuePair<string, object> data) {
         this.From = from;
         this.To = to;
-        this.Data = data;
+
+        this.Data.Add(data);
+    }
+
+    public void AddData(KeyValuePair<string, object> data)
+    {
+        Data.Add(data);
     }
 
     public override string ToString()

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -46,7 +48,9 @@ namespace Stater.Graph
 
                         // ...then we add the input class as a parameter of the node using an edge
                         Node node = builderState.graph[builderState.classDef.Name];
-                        Edge edge = new Edge(StaterConstants.EXTERNAL_INPUT, node.ID, UnityConstants.INPUT_CLASS);
+                        
+                        Edge edge = new Edge(StaterConstants.EXTERNAL_INPUT, node.ID,
+                            new KeyValuePair<string, object>(UnityConstants.INPUT_CLASS, "I'm a unity input class!"));
 
                         builderState.graph.AddEdge(edge);
                     }
