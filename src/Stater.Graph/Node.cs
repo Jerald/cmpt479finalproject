@@ -26,6 +26,16 @@ public class Node {
         return this.outgoing.Values;
     }
 
+    public Edge GetEdge(string ID)
+    {
+        Edge ret = incoming[ID];
+        if (ret == null)
+        {
+            ret = outgoing[ID];
+        }
+        return ret;
+    }
+
     public void AddIncoming(Edge edge)
     {
         this.incoming.Add(edge.From, edge);

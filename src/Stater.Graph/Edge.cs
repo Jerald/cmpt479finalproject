@@ -12,6 +12,11 @@ public class Edge {
         this.Data = data;
     }
 
+    public void MergeData(Edge newEdge)
+    {
+        //TODO
+    }
+
     public override string ToString()
     {
         string output = "{ from: '" + this.From + "', to: '" + this.To + "', data: '" + Data.ToString() + "' }";

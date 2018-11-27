@@ -30,7 +30,11 @@ public class ClassGraph {
     }
 
     public void AddEdge(Edge edge) {
-
+        if(nodes[edge.To].ContainsEdge(edge))
+        {
+            nodes[edge.To].GetEdge(edge.From).MergeData(edge);
+            return;
+        }
         nodes[edge.To].AddIncoming(edge);
 
         // If the input is from external, there's nothing to attach the other end to
