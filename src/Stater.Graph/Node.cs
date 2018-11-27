@@ -1,13 +1,16 @@
 using System.Collections.Generic;
 
-namespace Stater
+using Stater.Utils;
+
+namespace Stater.Graph
 {
 
 public class Node {
 
+    public readonly string ID;
+
     private Dictionary<string, Edge> incoming = new Dictionary<string, Edge>();
     private Dictionary<string, Edge> outgoing = new Dictionary<string, Edge>();
-    public readonly string ID;
 
     public Node(string ID) {
         this.ID = ID;
@@ -43,7 +46,27 @@ public class Node {
         this.outgoing.Remove(edge.To);
     }
 
-   
+
+    public override string ToString()
+    {
+        string output = "{\n" + t.tab(1) + "ID: " + ID + ",\n" + t.tab(1) + "incoming: {\n";
+
+        foreach (var edgePair in incoming)
+        {
+            output += t.tab(2) + edgePair.Value.ToString() + ",\n";
+        }
+        
+        output += t.tab(1) + "},\n" + t.tab(1) + "outgoing: {\n";
+
+        foreach (var edgePair in outgoing)
+        {
+            output += t.tab(2) + edgePair.Value.ToString() + ",\n";
+        }
+
+        output += t.tab(1) + "}\n}";
+
+        return output;
+    }
 }
 
 }

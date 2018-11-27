@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Stater.Graph;
 
 namespace Stater
 {
@@ -9,6 +10,16 @@ static class SceneManager
     public static void CreateScene(string sceneId)
     {
         sceneGraphs.Add(sceneId, new ClassGraph());
+    }
+
+    public static void RemoveScene(string sceneId)
+    {
+        sceneGraphs.Remove(sceneId);
+    }
+
+    public static void RemoveAllScenes()
+    {
+        sceneGraphs.Clear();
     }
 
     public static ClassGraph GetSceneGraph(string sceneId)

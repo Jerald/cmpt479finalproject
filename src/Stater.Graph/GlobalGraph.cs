@@ -1,4 +1,4 @@
-namespace Stater
+namespace Stater.Graph
 {
 
 class GlobalGraph : ClassGraph {

@@ -1,10 +1,19 @@
 using System.Collections.Generic;
 
-namespace Stater
+using Stater.Constants.Stater;
+
+namespace Stater.Graph
 {
     
 public class ClassGraph {
     private Dictionary<string, Node> nodes { get; } = new Dictionary<string, Node>();
+
+    // Indexing a class graph with square brackets (like an array)
+    // will return the node with the given key
+    public Node this[string ID]
+    {
+        get { return nodes[ID]; }
+    }
 
     public void AddNode(Node node) {
         nodes.Add(node.ID, node);
@@ -21,10 +30,16 @@ public class ClassGraph {
     }
 
     public void AddEdge(Edge edge) {
-        // Attach edge to its nodes
-        nodes[edge.From].AddOutgoing(edge);
+
         nodes[edge.To].AddIncoming(edge);
-        
+
+        // If the input is from external, there's nothing to attach the other end to
+        if (edge.From == StaterConstants.EXTERNAL_INPUT)
+        {
+            return;
+        }
+
+        nodes[edge.From].AddOutgoing(edge);        
     }
 
     public void RemoveEdge(Edge edge) {
@@ -43,6 +58,19 @@ public class ClassGraph {
 
     public bool ContainsNode(string ID){
         return nodes.ContainsKey(ID);
+    }
+
+    public override string ToString()
+    {
+        string output = "";
+
+        foreach (var node in GetNodes())
+        {
+            output += "Node:\n" + node.ToString();
+            output += "\n";
+        }
+
+        return output;
     }
 
 }
