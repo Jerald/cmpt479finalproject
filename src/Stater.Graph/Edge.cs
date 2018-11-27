@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 namespace Stater.Graph
 {
@@ -12,7 +13,6 @@ public class Edge {
     public Edge(string from, string to, KeyValuePair<string, object> data) {
         this.From = from;
         this.To = to;
-
         this.Data.Add(data);
     }
 
@@ -23,7 +23,18 @@ public class Edge {
 
     public void MergeData(Edge newEdge)
     {
-        //TODO
+        foreach(KeyValuePair<string, object> pair in newEdge.Data)
+        {
+            if(this.Data.ContainsKey(pair.Key))
+            {
+                //TODO merge data object
+                Console.WriteLine("FAILED TO MERGE EDGE DATA");
+            }
+            else
+            {
+                this.Data.Add(pair);
+            }
+        }
     }
 
     public override string ToString()

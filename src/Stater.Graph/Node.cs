@@ -27,7 +27,6 @@ public class Node {
         return this.outgoing.Values;
     }
 
-<<<<<<< HEAD
     public Edge GetEdge(string ID)
     {
         Edge ret = incoming[ID];
@@ -38,10 +37,7 @@ public class Node {
         return ret;
     }
 
-    public void AddIncoming(Edge edge)
-=======
     public void AddEdge(Edge edge)
->>>>>>> origin/oscar
     {
         if (edge.To == ID)
         {
