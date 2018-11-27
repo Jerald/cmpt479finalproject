@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using Stater.Utils;
 
@@ -26,6 +27,7 @@ public class Node {
         return this.outgoing.Values;
     }
 
+<<<<<<< HEAD
     public Edge GetEdge(string ID)
     {
         Edge ret = incoming[ID];
@@ -37,23 +39,54 @@ public class Node {
     }
 
     public void AddIncoming(Edge edge)
+=======
+    public void AddEdge(Edge edge)
+>>>>>>> origin/oscar
     {
-        this.incoming.Add(edge.From, edge);
+        if (edge.To == ID)
+        {
+            incoming.Add(edge.From, edge);
+        }
+        else if (edge.From == ID)
+        {
+            outgoing.Add(edge.To, edge);
+        }
+        else
+        {
+            throw new System.ArgumentException("Provided edge's To and From fields don't match node!");
+        }
     }
 
-    public void RemoveIncoming(Edge edge)
+    public void RemoveEdge(Edge edge)
     {
-        this.incoming.Remove(edge.From);
+        if (edge.To == ID)
+        {
+            incoming.Remove(edge.From);
+        }
+        else if (edge.From == ID)
+        {
+            outgoing.Remove(edge.To);
+        }
+        else
+        {
+            throw new System.ArgumentException("Provided edge's To and From fields don't match node!");
+        }
     }
 
-    public void AddOutgoing(Edge edge)
+    public bool ContainsEdge(Edge edge)
     {
-        this.outgoing.Add(edge.To, edge);
-    }
-
-    public void RemoveOutgoing(Edge edge)
-    {
-        this.outgoing.Remove(edge.To);
+        if (edge.To == ID)
+        {
+            return incoming.ContainsKey(edge.From);
+        }
+        else if (edge.From == ID)
+        {
+            return outgoing.ContainsKey(edge.To);
+        }
+        else
+        {
+            return false;
+        }
     }
 
 

@@ -35,7 +35,7 @@ public class ClassGraph {
             nodes[edge.To].GetEdge(edge.From).MergeData(edge);
             return;
         }
-        nodes[edge.To].AddIncoming(edge);
+        nodes[edge.To].AddEdge(edge);
 
         // If the input is from external, there's nothing to attach the other end to
         if (edge.From == StaterConstants.EXTERNAL_INPUT)
@@ -43,13 +43,13 @@ public class ClassGraph {
             return;
         }
 
-        nodes[edge.From].AddOutgoing(edge);        
+        nodes[edge.From].AddEdge(edge);        
     }
 
     public void RemoveEdge(Edge edge) {
         // Remove edge from its node
-        nodes[edge.From].RemoveOutgoing(edge);
-        nodes[edge.To].RemoveIncoming(edge);
+        nodes[edge.From].RemoveEdge(edge);
+        nodes[edge.To].RemoveEdge(edge);
     }
 
     public ICollection<Edge> GetIncoming(string ID) {
@@ -63,6 +63,7 @@ public class ClassGraph {
     public bool ContainsNode(string ID){
         return nodes.ContainsKey(ID);
     }
+    
 
     public override string ToString()
     {
