@@ -58,14 +58,20 @@ namespace Stater.Graph
             {
                 classDef = _classDef;
 
-                t.debugPrint("Class: ", classDef.ToString());
+                t.SetColor(ConsoleColor.Cyan);
+                t.DebugPrint("Class: ", classDef.ToString());
+                t.ResetColor();
+
                 classAnalysis(classDef);
 
                 foreach (FieldDefinition _fieldDef in classDef.Fields)
                 {
                     fieldDef = _fieldDef;
 
-                    t.debugPrint(t.tab(1) + "Field: ", fieldDef.ToString());
+                    t.SetColor(ConsoleColor.Magenta);
+                    t.DebugPrint(t.tab(1) + "Field: ", fieldDef.ToString());
+                    t.ResetColor();
+
                     fieldAnalysis(fieldDef);
                 }
 
@@ -73,7 +79,10 @@ namespace Stater.Graph
                 {
                     methodDef = _methodDef;
 
-                    t.debugPrint(t.tab(1) + "Method: ", methodDef.ToString());
+                    t.SetColor(ConsoleColor.Magenta);
+                    t.DebugPrint(t.tab(1) + "Method: ", methodDef.ToString());
+                    t.ResetColor();
+
                     methodAnalysis(methodDef);
 
                     foreach (Instruction _instruction in methodDef.Body.Instructions)
