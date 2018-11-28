@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
+using Stater.Utils;
+
 namespace Stater.Graph
 {
     
@@ -28,7 +30,10 @@ public class Edge {
             if(this.Data.ContainsKey(pair.Key))
             {
                 //TODO merge data object
-                Console.WriteLine("FAILED TO MERGE EDGE DATA");
+
+                t.SetColor(ConsoleColor.Red);
+                Console.WriteLine("TODO: actually merge data objects!");
+                t.ResetColor();
             }
             else
             {
@@ -39,7 +44,15 @@ public class Edge {
 
     public override string ToString()
     {
-        string output = "{ from: '" + this.From + "', to: '" + this.To + "', data: '" + Data.ToString() + "' }";
+        // TODO: make this actually print all the dictionary info!
+
+        var keys = Data.Keys.GetEnumerator();
+        var values = Data.Values.GetEnumerator();
+        
+        keys.MoveNext();
+        values.MoveNext();
+
+        string output = "{ from: '" + this.From + "', to: '" + this.To + "', data: { keys: '" + keys.Current + "', values: '" + values.Current + "' } }";
         return output;
     }
 }
