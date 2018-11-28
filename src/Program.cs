@@ -7,6 +7,9 @@ using Stater.Graph;
 namespace Stater
 {
 
+// Check if the operand.FieldType exists within the graph.
+// If it does, then add an edge connection!
+
 class Program
 {
     static void Main(string[] args)
@@ -14,11 +17,20 @@ class Program
         Builder builder = new Builder();
 
         builder.AddClassAnalysisPass(
-            new AnalysisPasses.NodeAddingClassPass());
+            new AnalysisPasses.AddNodeClassPass());
 
         builder.AddInstructionAnalysisPass(
             new AnalysisPasses.InputFindingInstructionPass());
 
+        // builder.AddInstructionAnalysisPass(
+        //     new AnalysisPasses.PrintAllInstructionPass());
+
+        builder.AddInstructionAnalysisPass(
+            new AnalysisPasses.PrintMethodInfoInstructionPass("System.Void FollowPlayer::OnCollisionEnter(UnityEngine.Collision)"));    
+
+        builder.AddInstructionAnalysisPass(
+            new AnalysisPasses.FindNodeUsageInstructionPass());
+    
         ClassGraph graph = builder.Build();
 
         Console.WriteLine(graph.ToString());
