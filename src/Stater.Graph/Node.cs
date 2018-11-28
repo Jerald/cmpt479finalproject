@@ -29,12 +29,18 @@ public class Node {
 
     public Edge GetEdge(string ID)
     {
-        Edge ret = incoming[ID];
-        if (ret == null)
+        if (incoming.ContainsKey(ID))
         {
-            ret = outgoing[ID];
+            return incoming[ID];
         }
-        return ret;
+        else if (outgoing.ContainsKey(ID))
+        {
+            return outgoing[ID];
+        }
+        else
+        {
+            throw new System.ArgumentException("Provided ID not attached on either incoming or outgoing!");
+        }
     }
 
     public void AddEdge(Edge edge)
