@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using Mono.Cecil;
@@ -14,7 +15,7 @@ namespace Stater.Graph
     public static class AnalysisPasses
     {
         // Simply adds nodes for classes found
-        public class NodeAddingClassPass : IAnalysisPass<TypeDefinition>
+        public class AddNodeClassPass : IAnalysisPass<TypeDefinition>
         {
             public void analyze(TypeDefinition classDef, Builder.BuilderState builderState)
             {
@@ -44,7 +45,7 @@ namespace Stater.Graph
                     // ...and if the function being called is from the unity input class...
                     if (declaringClass.FullName == UnityConstants.INPUT_CLASS)
                     {
-                        t.debugPrint("Found ", UnityConstants.INPUT_CLASS);
+                        t.DebugPrint("Found ", UnityConstants.INPUT_CLASS);
 
                         // ...then we add the input class as a parameter of the node using an edge
                         Node node = builderState.graph[builderState.classDef.Name];
@@ -52,8 +53,116 @@ namespace Stater.Graph
                         Edge edge = new Edge(StaterConstants.EXTERNAL_INPUT, node.ID,
                             new KeyValuePair<string, object>(UnityConstants.INPUT_CLASS, "I'm a unity input class!"));
 
+                        // t.DebugPrint("Input instruction: ", instruction.ToString());
+
                         builderState.graph.AddEdge(edge);
                     }
+                }
+            }
+        }
+    
+        // Prints ALL instructions with no extra information
+        public class PrintAllInstructionPass : IAnalysisPass<Instruction>
+        {
+            public void analyze(Instruction instruction, Builder.BuilderState builderState)
+            {
+                t.SetColor(ConsoleColor.Yellow);
+                t.DebugPrint(t.tab(1) + "Inst: ", instruction.ToString());
+                t.ResetColor();
+            }
+        }
+
+        // Prints a bunch of information on the instructions of a method specified
+        public class PrintMethodInfoInstructionPass : IAnalysisPass<Instruction>
+        {
+            private string methodName;
+
+            public PrintMethodInfoInstructionPass(string methodName)
+            {
+                this.methodName = methodName;
+            }
+
+            public void analyze(Instruction instruction, Builder.BuilderState builderState)
+            {
+                if (builderState.methodDef.FullName != methodName)
+                {
+                    return;
+                }
+                
+                t.SetColor(ConsoleColor.Yellow);
+                t.DebugPrint(t.tab(1) + "Inst: ", instruction.ToString());
+
+                t.SetColor(ConsoleColor.Blue);
+                t.DebugPrint(t.tab(2) + "Opcode: ", instruction.OpCode.ToString());
+
+                if (instruction.Operand != null)
+                {
+                    var objOperand = instruction.Operand;
+                    var operandType = objOperand.GetType();
+
+                    t.DebugPrint(t.tab(2) + "Operand: ", objOperand.ToString());      
+                    t.DebugPrint(t.tab(2) + "Operand type: ", operandType.ToString());
+
+                    t.SetColor(ConsoleColor.DarkGreen);
+
+                    if (operandType == typeof(Mono.Cecil.FieldDefinition))
+                    {
+                        FieldDefinition operand = (FieldDefinition)objOperand;
+                        
+                        t.DebugPrint(t.tab(3) + "Field declaring type: ", operand.DeclaringType.FullName);
+                        t.DebugPrint(t.tab(3) + "Field field type: ", operand.FieldType.FullName);
+                    }
+                    else if (operandType == typeof(Mono.Cecil.MethodReference))
+                    {
+                        MethodReference operand = (MethodReference)objOperand;
+
+                        t.DebugPrint(t.tab(3) + "Method ref return type: ", operand.ReturnType.FullName);
+                    }
+                    else if (operandType == typeof(Mono.Cecil.MethodDefinition))
+                    {
+                        MethodDefinition operand = (MethodDefinition)objOperand;
+
+                        t.DebugPrint(t.tab(3) + "Method def declaring type: ", operand.DeclaringType.FullName);
+                        t.DebugPrint(t.tab(3) + "Method def return type: ", operand.ReturnType.FullName);
+                    }
+                }
+
+                t.ResetColor();
+            }
+        }
+    
+        public class FindNodeUsageInstructionPass : IAnalysisPass<Instruction>
+        {
+            public void analyze(Instruction instruction, Builder.BuilderState builderState)
+            {
+                if (instruction.Operand == null)
+                {
+                    return;
+                }
+
+                var operand = instruction.Operand;
+
+                if (operand.GetType() == typeof(Mono.Cecil.FieldDefinition))
+                {
+                    var operandFieldDef = (FieldDefinition)operand;
+                    var fieldType = operandFieldDef.FieldType;
+                    var nodeID = fieldType.FullName;
+
+                    t.SetColor(ConsoleColor.White);
+                    // t.DebugPrint("FindNodeUsage - field type full name: ", nodeID);
+                    t.ResetColor();
+
+                    ClassGraph graph = builderState.graph;
+
+                    // if (graph.ContainsNode(nodeID) == true)
+                    // {
+                        t.SetColor(ConsoleColor.White);
+                        t.DebugPrint("Using node from elsewhere: ", nodeID);
+                        t.ResetColor();
+
+                        Edge edge = new Edge(builderState.classDef.FullName, nodeID, new KeyValuePair<string, object>("UNKNOWN", "Using something from somewhere else!"));
+                        graph.AddEdge(edge);
+                    // }
                 }
             }
         }
