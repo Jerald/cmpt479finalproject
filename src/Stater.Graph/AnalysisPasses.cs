@@ -51,7 +51,7 @@ namespace Stater.Graph
                         Node node = builderState.graph[builderState.classDef.Name];
                         
                         Edge edge = new Edge(StaterConstants.EXTERNAL_INPUT, node.ID,
-                            new KeyValuePair<string, object>(UnityConstants.INPUT_CLASS, "I'm a unity input class!"));
+                            new KeyValuePair<string, string>(UnityConstants.INPUT_CLASS, "I'm a unity input class!"));
 
                         // t.DebugPrint("Input instruction: ", instruction.ToString());
 
@@ -133,6 +133,8 @@ namespace Stater.Graph
     
         public class FindNodeUsageInstructionPass : IAnalysisPass<Instruction>
         {
+            private bool fieldLoadedLast = false;
+            private string fieldNodeID = "";
             public void analyze(Instruction instruction, Builder.BuilderState builderState)
             {
                 if (instruction.Operand == null)
@@ -140,29 +142,35 @@ namespace Stater.Graph
                     return;
                 }
 
+                var opcode = instruction.OpCode;
                 var operand = instruction.Operand;
 
-                if (operand.GetType() == typeof(Mono.Cecil.FieldDefinition))
+                if (fieldLoadedLast == true)
+                {
+                    // var operandFieldDef = (FieldDefinition)operand;
+                    // var fieldType = operandFieldDef.FieldType;
+
+                    ClassGraph graph = builderState.graph;
+                    Edge edge = new Edge(builderState.classDef.FullName, fieldNodeID, new KeyValuePair<string, string>(operand.ToString(), "This is from somewhere else!"));
+                    graph.AddEdge(edge);
+
+                    fieldLoadedLast = false;
+                    fieldNodeID = "";
+                }
+
+                if (opcode.Name == DotnetConstants.OPCODE_LDFLD
+                    && operand.GetType() == typeof(Mono.Cecil.FieldDefinition))
                 {
                     var operandFieldDef = (FieldDefinition)operand;
                     var fieldType = operandFieldDef.FieldType;
                     var nodeID = fieldType.FullName;
 
+                    fieldNodeID = nodeID;
+                    fieldLoadedLast = true;
+
                     t.SetColor(ConsoleColor.White);
-                    // t.DebugPrint("FindNodeUsage - field type full name: ", nodeID);
+                    t.DebugPrint("AnalysisPasses.FindNodeUsageInstructionPass -- field loaded:", fieldType.FullName);
                     t.ResetColor();
-
-                    ClassGraph graph = builderState.graph;
-
-                    // if (graph.ContainsNode(nodeID) == true)
-                    // {
-                        t.SetColor(ConsoleColor.White);
-                        t.DebugPrint("Using node from elsewhere: ", nodeID);
-                        t.ResetColor();
-
-                        Edge edge = new Edge(builderState.classDef.FullName, nodeID, new KeyValuePair<string, object>("UNKNOWN", "Using something from somewhere else!"));
-                        graph.AddEdge(edge);
-                    // }
                 }
             }
         }

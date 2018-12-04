@@ -98,14 +98,14 @@ public class Node {
 
         foreach (var edgePair in incoming)
         {
-            output += t.tab(2) + edgePair.Value.ToString() + ",\n";
+            output += edgePair.Value.ToString() + ",\n";
         }
         
         output += t.tab(1) + "},\n" + t.tab(1) + "outgoing: {\n";
 
         foreach (var edgePair in outgoing)
         {
-            output += t.tab(2) + edgePair.Value.ToString() + ",\n";
+            output += edgePair.Value.ToString() + ",\n";
         }
 
         output += t.tab(1) + "}\n}";

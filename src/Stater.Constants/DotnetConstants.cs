@@ -4,5 +4,7 @@ namespace Stater.Constants.Dotnet
     {
         public const string OPCODE_CALLVIRT = "callvirt";
         public const string OPCODE_CALL = "call";
+
+        public const string OPCODE_LDFLD = "ldfld";
     }
 }

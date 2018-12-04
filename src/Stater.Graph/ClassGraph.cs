@@ -8,9 +8,6 @@ namespace Stater.Graph
 public class ClassGraph {
     private readonly Dictionary<string, Node> nodes = new Dictionary<string, Node>();
 
-    private readonly Dictionary<string, Edge> orphanedIncomingEdges = new Dictionary<string, Edge>();
-    private readonly Dictionary<string, Edge> orphanedOutgoingEdges = new Dictionary<string, Edge>();
-
     // Indexing a class graph with square brackets (like an array)
     // will return the node with the given key
     public Node this[string ID]
@@ -20,27 +17,13 @@ public class ClassGraph {
 
     public void AddNode(Node node)
     {
-        // TODO: check if node already exist and do something safe then
+        // TODO: check if the provided node's incoming or outgoing dictionary has any nodes. If so, merge them
+        if (nodes.ContainsKey(node.ID) == true)
+        {
+            return;
+        }
         
         nodes.Add(node.ID, node);
-
-        // Case if there is an orphaned incoming edge
-        if (orphanedIncomingEdges.ContainsKey(node.ID))
-        {
-            var orphanedEdge = orphanedIncomingEdges[node.ID];
-            orphanedIncomingEdges.Remove(node.ID);
-
-            this.AddEdge(orphanedEdge);
-        }
-
-        // Case if there is an orphaned outgoing edge
-        if (orphanedOutgoingEdges.ContainsKey(node.ID))
-        {
-            var orphanedEdge = orphanedOutgoingEdges[node.ID];
-            orphanedOutgoingEdges.Remove(node.ID);
-
-            this.AddEdge(orphanedEdge);
-        }
     }
 
     public void RemoveNode(string ID)
@@ -55,35 +38,24 @@ public class ClassGraph {
 
     public void AddEdge(Edge edge)
     {
+        KeyValuePair<string, string> edgeToFromPair = edge.GetToFromPair();
+
         // Case where destination node doesn't exist
         if (nodes.ContainsKey(edge.To) == false)
         {
-            // TODO: _properly_ handle orphaned edges with duplicate key, including if exact edge already exists
-            if (orphanedIncomingEdges.ContainsKey(edge.To) == false)
-            {
-                orphanedIncomingEdges.Add(edge.To, edge);
-            }
+            this.AddNode(new Node(edge.To));
         }
         else // Destination node _does_ exist
         {
-            /* 
-            * WARNING: this case may have flawed logic.
-            *
-            * The issue may be that by returning early there isn't a chance for it to attach to the source node.
-            *
-            * It _should_ be fine, since any orphaned edges would've attached when the node was added,
-            * meaning if one side is aware of the edge the other would as well.
-            */
-
             // Case where we want to merge the edge annotation data
             if (nodes[edge.To].ContainsEdge(edge))
             {
                 nodes[edge.To].GetEdge(edge.From).MergeData(edge);
                 return;
             }
-
-            nodes[edge.To].AddEdge(edge);
         }
+
+        nodes[edge.To].AddEdge(edge);
 
         // Case where the source is an external input
         if (edge.From == StaterConstants.EXTERNAL_INPUT)
@@ -92,11 +64,7 @@ public class ClassGraph {
         } // Case where source node doesn't exist (and it's not an external input)
         else if (nodes.ContainsKey(edge.From) == false)
         {
-            // TODO: _properly_ handle orphaned edges with duplicate key, including if exact edge already exists
-            if (orphanedOutgoingEdges.ContainsKey(edge.From) == false)
-            {
-                orphanedOutgoingEdges.Add(edge.From, edge);
-            }
+            this.AddNode(new Node(edge.To));
         }
         else // Source node _does_ exist and isn't an external input
         {
@@ -106,9 +74,10 @@ public class ClassGraph {
                 nodes[edge.From].GetEdge(edge.To).MergeData(edge);
                 return;
             }
-
-             nodes[edge.From].AddEdge(edge);  
         }
+
+        nodes[edge.From].AddEdge(edge);  
+
     }
 
     public void RemoveEdge(Edge edge)
