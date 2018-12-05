@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 
 using Stater.Utils;
+using Stater.Operations;
 
 namespace Stater.Graph
 {
@@ -34,8 +35,14 @@ public class Edge {
     {
         return new KeyValuePair<string, string>(this.To, this.From);
     }
+    // Returns all data (operations) which affect fields listed in requestedFields
+    public ICollection<IOperation> getFilteredData(ICollection<string> requestedFields)
+    {
+        // TODO:: implement
+        throw new NotImplementedException();
+    }
 
-    public void MergeData(Edge newEdge)
+        public void MergeData(Edge newEdge)
     {
         foreach (KeyValuePair<string, string> pair in newEdge.Data)
         {
@@ -66,7 +73,7 @@ public class Edge {
 
         string output = t.tab(2) + "{ from: '" + this.From + "', to: '" + this.To + "', data: {\n";
 
-        foreach (var pair in Data)
+        foreach (KeyValuePair<string, string> pair in Data)
         {
             output += t.tab(4) + "{ key: '" + pair.Key + "', value: '" + pair.Value + "' },\n";
         }
