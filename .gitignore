@@ -48,6 +48,9 @@ msbuild.wrn
 *.cb2
 .*.lb
 
+#Final results
+*.pdf
+
 # endnotes
 *.ent
 
