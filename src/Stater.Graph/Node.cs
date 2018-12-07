@@ -1,6 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
+using Stater.Constraints;
 using Stater.Utils;
 
 namespace Stater.Graph
@@ -12,8 +13,12 @@ public class Node {
 
     private Dictionary<string, Edge> incoming = new Dictionary<string, Edge>();
     private Dictionary<string, Edge> outgoing = new Dictionary<string, Edge>();
+    private HashSet<IConstraint> constraints = new HashSet<IConstraint>();
 
-    public Node(string ID) {
+    public HashSet<IConstraint> Constraints { get => constraints;}
+
+    public Node(string ID)
+    {
         this.ID = ID;
     }
 
