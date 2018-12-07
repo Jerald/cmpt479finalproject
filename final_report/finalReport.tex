@@ -63,7 +63,7 @@ Whet our appetites.
 %- How we're doing it
 %- What we've done
 
-Game development is one of the fastest growing software development fields. In the modern age where the industry is quickly embracing automated testing to help catch errors, game development hasn't kept up. In an attempt to remedy this, we introduce BAD: a three-phase system to automatically verify and generate program assertions to help validate correct game behaviour. \\
+Game development is one of the fastest growing software development fields. In the modern age where the industry is quickly embracing automated testing to help catch errors, game development hasn't kept up. In an attempt to remedy this, we introduce BAD: a three-phase system to automatically verify and generate program assertions to help validate correct game behaviour.
 
 BAD is based around creating a tick-agnostic model of game object interactions to attempt to summarize relevant game object behaviour. Our system does this over three phases:
 
@@ -73,7 +73,7 @@ BAD is based around creating a tick-agnostic model of game object interactions t
     \item{\textbf{Assertion Generation:}} by taking in information about the layout of a game (say, level information) and combining it with the generated model, the system will look for types of idiomatic mistakes and symptomatic designs which should be checked for correctness.
 \end{enumerate}
 
-We've created a proof-of-concept implementation of BAD in C\#, targeting the Unity game engine. We use .NET Core as the runtime for the system, so it can be used cross-platform. Currently the system performs effective generation of the model and basic analysis of assertions. The assertion generation phase of the system is still being designed, but we have a solid design laid out for when the time comes.\\
+We've created a proof-of-concept implementation of BAD in C\#, targeting the Unity game engine. We use .NET Core as the runtime for the system, so it can be used cross-platform. Currently the system performs effective generation of the model and basic analysis of assertions. The assertion generation phase of the system is still being designed, but we have a solid design plan laid out for when the time comes.
 
 A paragraph of text goes here.  Lots of text.  Plenty of interesting
 text. \\
@@ -111,7 +111,12 @@ always be attached to the word that preceded it, instead of going to the
 next line.
 
 \section{Approach}
-\subsection{Phase One}
+
+BAD has the three phases of \textbf{Model Generation}, \textbf{Assertion Validation}, and \textbf{Assertion Generation}. Together these form of the core of the how the BAD system accomplishes its goal. 
+
+\subsection{Phase One: Model Generation}
+
+Our model is a \textbf{tick-agnostic} abstraction of game object \textbf{interaction} representing overall game behaviour. \textbf{Tick-agnostic} is referring to how we model the state of game objects at an arbitrary point in time. By typical design, games have at their core a main loop, 
 
 Here's a typical figure reference.  The figure is centered at the
 top of the column.  It's scaled.  It's explicitly placed.  You'll
@@ -130,7 +135,7 @@ have to tweak the numbers to get what you want.\\
 This text came after the figure, so we'll casually refer to Figure 1
 as we go on our merry way.
 
-\subsection{Phase Two}
+\subsection{Phase Two: Assertion Verification}
 
 It can get tricky typesetting Tcl and C code in LaTeX because they share
 a lot of mystical feelings about certain magic characters.  You
@@ -173,7 +178,7 @@ the number of objects read.
 \end{itemize}
 This concludes the definitions tag.
 
-\subsection{Phase Three}
+\subsection{Phase Three: Assertion Generation}
 
 You have to run {\tt latex} once to prepare your references for
 munging.  Then run {\tt bibtex} to build your bibliography metadata.
