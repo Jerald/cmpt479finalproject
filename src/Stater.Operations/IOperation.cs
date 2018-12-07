@@ -1,12 +1,19 @@
 namespace Stater.Operations{
 
-public interface IOperation{
+public abstract class IOperation{
 
-    string getField();
+        private string field;
+        private bool isConditional;
 
-    // TODO:: other things?
-    // AbstractDomain apply(AbstractDomain ad)?
+        public string Field { get => field; set => field = value; }
+        public bool IsConditional { get => isConditional; set => isConditional = value; }
 
-}
+        // some representation of condition
+
+
+        // TODO:: other things?
+        // AbstractDomain apply(AbstractDomain ad)?
+
+    }
 
 }
