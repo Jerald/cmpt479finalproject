@@ -13,7 +13,7 @@
 % the .sty file from the LaTeX source template, so that people can
 % more easily include the .sty file into an existing document.  Also
 % changed to more closely follow the style guidelines as represented
-% by the Word sample file. 
+% by the Word sample file.
 
 % Note that since 2010, USENIX does not require endnotes. If you want
 % foot of page notes, don't include the endnotes package in the 
@@ -24,22 +24,22 @@
 % Updated July 2018: Text block size changed from 6.5" to 7"
 
 \documentclass[letterpaper,twocolumn,10pt]{article}
-\usepackage{usenix_style,epsfig,endnotes}
+\usepackage{finalReport_style,epsfig,endnotes}
 \begin{document}
 
 %don't want date printed
 \date{}
 
 %make title bold and 14 pt font (Latex default is non-bold, 16 pt)
-\title{\Large \bf Wonderful : A Terrific Application and Fascinating Paper}
+\title{\Large \bf BAD: Automated Assertion Verification and Generation for Game Testing}
 
 %for single author (just remove % characters)
 \author{
-{\rm Your N.\ Here}\\
-Your Institution
+{\rm Oscar Smith-Sieger}\\
+Simon Fraser University
 \and
-{\rm Second Name}\\
-Second Institution
+{\rm Cole Greer}\\
+Simon Fraser University
 % copy the following lines to add more authors
 % \and
 % {\rm Name}\\
@@ -64,7 +64,7 @@ text. \\
 
 More fascinating text. Features\endnote{Remember to use endnotes, not footnotes!} galore, plethora of promises.\\
 
-\section{This is Another Section}
+\section{Background}
 
 Some embedded literal typset code might 
 look like the following :
@@ -94,8 +94,8 @@ in the source means a non-breaking space.  This way, your reference will
 always be attached to the word that preceded it, instead of going to the
 next line.
 
-\section{This Section has SubSections}
-\subsection{First SubSection}
+\section{Approach}
+\subsection{Phase One}
 
 Here's a typical figure reference.  The figure is centered at the
 top of the column.  It's scaled.  It's explicitly placed.  You'll
@@ -114,7 +114,7 @@ have to tweak the numbers to get what you want.\\
 This text came after the figure, so we'll casually refer to Figure 1
 as we go on our merry way.
 
-\subsection{New Subsection}
+\subsection{Phase Two}
 
 It can get tricky typesetting Tcl and C code in LaTeX because they share
 a lot of mystical feelings about certain magic characters.  You
@@ -157,7 +157,7 @@ the number of objects read.
 \end{itemize}
 This concludes the definitions tag.
 
-\subsection{How to Build Your Paper}
+\subsection{Phase Three}
 
 You have to run {\tt latex} once to prepare your references for
 munging.  Then run {\tt bibtex} to build your bibliography metadata.
@@ -179,7 +179,13 @@ latex usenixTemplate
 Well, it's getting boring isn't it.  This is the last subsection
 before we wrap it up.
 
-\section{Acknowledgments}
+\section{Evaluation \& Observations}
+
+\section{Related Work}
+
+\section{Future Work}
+
+\section{Conclusion}
 
 A polite author always includes acknowledgments.  Thank everyone,
 especially those who funded the work. 
