@@ -77,9 +77,10 @@ We've created a proof-of-concept implementation of BAD in C\#, targeting the Uni
 
 \section{Background}
 
-The game development industry has yet to fully embrace automated testing and to this day, game testing remains a very hands-on labour intensive process. Manual testing of video games is slow, expensive, and results in poor coverage of the total game state space. As an extreme, yet real world, example, there is still a job in which someone is paid to spend hundreds of hours bumping into walls to test collisions. The current state of the video game testing is ripe for improvements. Automation would bring much needed efficiency to the industry.
+The game development industry has yet to fully embrace automated testing and to this day, game testing remains a very hands-on labour intensive process. Manual testing of video games is slow, expensive, and results in poor coverage of the total game state space. As an extreme, yet real world, example, there is still a job in which someone is paid to spend hundreds of hours bumping into walls to test collision. The current state of video game testing is ripe for improvements. Automation would bring much needed efficiency to the industry.
 
-A noteworthy example of automated game testing is the Walk Monster exploration tool~\cite{WalkMonster} which was created for the game The Witness.
+%TODO
+A noteworthy example of automated game testing is the \textit{Walk Monster}~\cite{WalkMonster} exploration tool which was written for \textit{The Witness}. 
 
 Some embedded literal typset code might 
 look like the following :
@@ -124,6 +125,9 @@ At a high level, you can think of the graph as representing the state of the gam
 To create the actual model itself in our reference implementation, we take in game source code compiled to a CIL\endnote{CIL is the Common Intermedeary Language. It's the low-level pseudo-assembly language ran on the .NET platform.} binary, known as an assembly. We utilize the \textit{Mono.Cecil}~\cite{Mono.Cecil} library to load and read the raw CIL. From there we identify game objects (in this case classes) to create nodes of, then search for and identify idioms within the code which correspond to affecting another game object. The actual operations applied by the effect are then encoded onto the edge between the nodes and its annotation. 
 
 \subsection{Phase Two: Assertion Verification}
+
+Our assertion verification system is moddeled as an inductive proof,
+
 
 It can get tricky typesetting Tcl and C code in LaTeX because they share
 a lot of mystical feelings about certain magic characters.  You
