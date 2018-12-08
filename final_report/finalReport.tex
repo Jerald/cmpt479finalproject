@@ -82,34 +82,6 @@ The game development industry has yet to fully embrace automated testing and to 
 %TODO
 A noteworthy example of automated game testing is the \textit{Walk Monster}~\cite{WalkMonster} exploration tool which was written for \textit{The Witness}. 
 
-Some embedded literal typset code might 
-look like the following :
-
-{\tt \small
-\begin{verbatim}
-int wrap_fact(ClientData clientData,
-              Tcl_Interp *interp,
-              int argc, char *argv[]) {
-    int result;
-    int arg0;
-    if (argc != 2) {
-        interp->result = "wrong # args";
-        return TCL_ERROR;
-    }
-    arg0 = atoi(argv[1]);
-    result = fact(arg0);
-    sprintf(interp->result,"%d",result);
-    return TCL_OK;
-}
-\end{verbatim}
-}
-
-Now we're going to cite somebody.  Watch for the cite tag.
-Here it comes~\cite{Chaum1981,Diffie1976}.  The tilde character (\~{})
-in the source means a non-breaking space.  This way, your reference will
-always be attached to the word that preceded it, instead of going to the
-next line.
-
 \section{Approach}
 
 BAD has the three phases of \textbf{Model Generation}, \textbf{Assertion Validation}, and \textbf{Assertion Generation}. Together these form of the core of the how the BAD system accomplishes its goal. 
@@ -172,36 +144,34 @@ This concludes the definitions tag.
 
 \subsection{Phase Three: Assertion Generation}
 
-You have to run {\tt latex} once to prepare your references for
-munging.  Then run {\tt bibtex} to build your bibliography metadata.
-Then run {\tt latex} twice to ensure all references have been resolved.
-If your source file is called {\tt usenixTemplate.tex} and your {\tt
-  bibtex} file is called {\tt usenixTemplate.bib}, here's what you do:
-{\tt \small
-\begin{verbatim}
-latex usenixTemplate
-bibtex usenixTemplate
-latex usenixTemplate
-latex usenixTemplate
-\end{verbatim}
-}
+This is the stage of BAD where we've not implemented any functionality yet. Though despite that, we've designed an outline for how we'll approach the problem in the future. Our end goal would to be able to generate a suite of effective assertions that model the intended behaviour of the objects within the game.
 
+Generation of assertions is the last step for a complete implementation of BAD. Rather than a user needing to provide the assertions for phase two to verify, this phase tried to analyze the provided code to determine things that should be asserted. Some possible assertions can be generated strictly from analyzing the code representing the game object behaviour, but some assertions need greater information. To solve this problem we propose taking additional information about the game world, usually in the form of the object hierarchy and arrangement in the world. Using this information, we're able to seed the model with concrete values instead of it being purely abstract, which can then be used to augment the search for more novel and useful assertions.
 
-\subsection{Last SubSection}
+Some possible types of assertions we've thought could be good are ones related to collision verification, violating impassable terrain, ensuring correct outcome of object interaction, and other interaction-related correctness issues. Most of these are fundamentally not difficult to specifically find useful information about, but would each require specialized techniques to be developed for. This would make it hard to generalize the technique across assertions to generate, but we're still investigating other possible new approaches to find more general assertions.
 
-Well, it's getting boring isn't it.  This is the last subsection
-before we wrap it up.
-
-\section{Evaluation \& Observations}CIL2binary
+\section{Evaluation \& Observations}
+CIL2binary
 
 \section{Related Work}
 
 \section{Future Work}
 
+The most pressing piece of future work for BAD is to actually implement a functional version of the third phase: Assertion Generation. This would turn BAD into a complete and actually practically useful piece of software for testing games. Beyond that, there are a number of ideas we have for applying some or all of the components of BAD. Though the ones we think are most interesting are other applications of the model we've designed:
+
+\begin{itemize}
+    \item{\textbf{Performance modeling:}} since the model encodes the way in which any sets of game objects could every interact, the information could be applied to identify independent computations which could then be parallellized. This has the possibility of dramatically improving the performance of a game that was previously running exclusively in one thread.  
+    \item {\textbf{Providing a viewable version of the model:}} simply providing a way for a developer to render and view the generated model could be useful for development. By representing actions between objects in a more visual and informative way, poor design could be identified and fixed earlier and more effectively than otherwise.
+    \item{\textbf{Optimization and code design suggestions:}} by knowing exactly how code interacts, the model can show otherwise invisible situations where code is called too often, or where it could benefit from a common abstraction. We'd propose a very similar fundamental design as assertion generation, but focusing on developer feedback instead of game restrictions.
+\end{itemize}
+
+Aside from that, a obvious path for future work is to port the system to other game engines and development environments. This would allow the system to be used by a broader audience and to possibly inspire more automated testing tools for game development.
+
 \section{Conclusion}
 
-A polite author always includes acknowledgments.  Thank everyone,
-especially those who funded the work. 
+We've shown BAD, our system to attempt to fill the automated testing gap that exists in the game development industry. BAD provides a three-phase system of generating a model, verifying assertions, then generating assertions automatically. We introduced a novel, or at least we think it is, model for representing tick-agnostic systems such as games.
+
+Most of our work went into designing the backbone architecture for the system as well as designing the specifics of the model. We're hoping that this work helps make it significantly easier to develop and extend the system in the future. After that, the rest of our work went into designing the way in which we'd validate the provided assertions in phase two.
 
 \section{Availability}
 
