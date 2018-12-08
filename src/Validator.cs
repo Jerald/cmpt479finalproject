@@ -11,6 +11,7 @@ public static class Validator
         {
             foreach(IConstraint constraint in node.Constraints)
             {
+                // TODO:: prove base case
                 ICollection<string> constrainedFields = constraint.getConstrainedFieldIdentifiers();
                 HashSet<IOperation> totalOperations = new HashSet<IOperation>();
                 foreach(Edge edge in node.GetIncoming())

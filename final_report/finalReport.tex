@@ -98,8 +98,10 @@ To create the actual model itself in our reference implementation, we take in ga
 
 \subsection{Phase Two: Assertion Verification}
 
-Our assertion verification system is moddeled as an inductive proof,
-
+Our assertion verification system is conducted as a series of inductive proofs. To test a given assertion, we first extract all of the variables which the assertion applies to. We then look up all of the operations which can be performed on these variables in the model from phase one. This set encompasses all mutations that can be performed on the given variables within one game tick. This will form the basis of our inductive proof. To avoid a state explosion, we conduct this proof on the abstract domain such that the assertion is true. For example if the assertion we are testing is that the player's $x$ coordinate is between 0 and 10, our abstract domain defines $x_{abstract}$ as true or false according to the expression:
+\begin{displaymath}x_{abstract}~=~(x_{concrete}\geq0)~\&\&~(x_{concrete}\leq10)
+\end{displaymath}
+The base case of our induction 
 
 It can get tricky typesetting Tcl and C code in LaTeX because they share
 a lot of mystical feelings about certain magic characters.  You
