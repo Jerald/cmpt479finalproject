@@ -31,7 +31,7 @@
 \date{}
 
 %make title bold and 14 pt font (Latex default is non-bold, 16 pt)
-\title{\Large \bf BAD: Automated Assertion Verification and Generation for Game Testing}
+\title{\Large \bf GIVBA: Automated Assertion Verification and Generation for Game Testing}
 
 %for single author (just remove % characters)
 \author{
@@ -55,7 +55,7 @@ Simon Fraser University
 
 \subsection*{Abstract}
 
-Game development is a very large section of the software development industry, but there is little to no work done on automated testing for games. To attempt to fix that we introduce BAD: a three-phase system building a tick-agnostic model of game behaviour used to verify and eventually generate assertions about correctness. \\
+Game development is a very large section of the software development industry, but there is little to no work done on automated testing for games. To attempt to fix that we introduce GIVBA: a three-phase system building a tick-agnostic model of game behaviour used to verify and eventually generate assertions about correctness. \\
 
 \section{Introduction}
 
@@ -63,9 +63,9 @@ Game development is a very large section of the software development industry, b
 %- How we're doing it
 %- What we've done
 
-Game development is one of the fastest growing software development fields. In the modern age where the industry is quickly embracing automated testing to help catch errors, game development hasn't kept up. In an attempt to remedy this, we introduce BAD: a three-phase system to automatically verify and generate program assertions to help validate correct game behaviour.\\
+Game development is one of the fastest growing software development fields. In the modern age where the industry is quickly embracing automated testing to help catch errors, game development hasn't kept up. In an attempt to remedy this, we introduce \textbf{G}ame \textbf{I}nteraction \textbf{V}alidation through \textbf{B}ehavioural \textbf{A}ssertions: a three-phase system to automatically verify and generate program assertions to help validate correct game behaviour.\\
 
-BAD is based around creating a tick-agnostic model of game object interactions to attempt to summarize relevant game object behaviour. Our system does this over three phases:
+GIVBA is based around creating a tick-agnostic model of game object interactions to attempt to summarize relevant game object behaviour. Our system does this over three phases:
 
 \begin{enumerate}
     \item{\textbf{Model Generation:}} by analyzing the code of a game we abstract away game objects to simply their name, modifiable fields, and the ways they interact with other objects. 
@@ -73,7 +73,7 @@ BAD is based around creating a tick-agnostic model of game object interactions t
     \item{\textbf{Assertion Generation:}} by taking in information about the layout of a game (say, level information) and combining it with the generated model, the system will look for types of idiomatic mistakes and symptomatic designs which should be checked for correctness.
 \end{enumerate}
 
-We've created a proof-of-concept implementation of BAD in C\#, targeting the Unity game engine. We use .NET Core as the runtime for the system, so it can be used cross-platform. Currently the system performs effective generation of the model and basic analysis of assertions. The assertion generation phase of the system is still being designed, but we have a solid design plan laid out for when the time comes. \\
+We've created a proof-of-concept implementation of GIVBA in C\#, targeting the Unity game engine. We use .NET Core as the runtime for the system, so it can be used cross-platform. Currently the system performs effective generation of the model and basic analysis of assertions. The assertion generation phase of the system is still being designed, but we have a solid design plan laid out for when the time comes. \\
 
 \section{Background}
 
@@ -84,7 +84,7 @@ A noteworthy example of automated game testing is the \textit{Walk Monster}~\cit
 
 \section{Approach}
 
-BAD has the three phases of \textbf{Model Generation}, \textbf{Assertion Validation}, and \textbf{Assertion Generation}. Together these form of the core of the how the BAD system accomplishes its goal. 
+GIVBA has the three phases of \textbf{Model Generation}, \textbf{Assertion Validation}, and \textbf{Assertion Generation}. Together these form of the core of the how the GIVBA system accomplishes its goal. 
 
 \subsection{Phase One: Model Generation}
 
@@ -101,19 +101,19 @@ To create the actual model itself in our reference implementation, we take in ga
 Our assertion verification system is conducted as a series of inductive proofs. To test a given assertion, we first extract all of the variables which the assertion applies to. We then look up all of the operations which can be performed on these variables in the model from phase one. This set encompasses all mutations that can be performed on the given variables within one game tick. This will form the basis of our inductive proof. To avoid a state explosion, we conduct this proof on the abstract domain such that the assertion is true. For example if the assertion we are testing is that the player's $x$ coordinate is between 0 and 10, our abstract domain defines $x_{abstract}$ as true or false according to the expression:
 \begin{displaymath}x_{abstract}~=~(x_{concrete}\geq0)~\&\&~(x_{concrete}\leq10)
 \end{displaymath}
-The base case of the induction is to show that the abstract domain is true at tick zero, the time of scene creation. Without specific scene data this cannot be proven. Although this is a shortcoming in our system, since our system is targeted at analyzing object interations to detect obscure bugs, testing an assertion which is invalid in the starting state is at best a marginal use case. Although BAD currently doesn't support analysis of scene data, we aim to augment our model with scene data in the future. \\
+The base case of the induction is to show that the abstract domain is true at tick zero, the time of scene creation. Without specific scene data this cannot be proven. Although this is a shortcoming in our system, since our system is targeted at analyzing object interations to detect obscure bugs, testing an assertion which is invalid in the starting state is at best a marginal use case. Although GIVBA currently doesn't support analysis of scene data, we aim to augment our model with scene data in the future. \\
 
 The inductive step of the proof is where most of the work takes place. We start from an an arbitrary tick n in which the assertion (inductive hypothesis) is assumed to be true. From this tick$_n$, we want to test if all possible tick$_{n+1}$'s are consistent with the assertion. The transition from tick$_n$ to a possible tick$_n+1$ is made by applying a combination of operations on the variables which are being tested. As these operations are being applied within a single game tick and Unity documentation states that within a single tick, the order in which any objects update() function is called is undefined, the ordering between our operations does not matter. This is repeated for all combinations within the set of operations that we previously extracted from our model. All tick$_n+1$'s which fail the assertion are logged, along with the combination of operations which lead to it, as a potential bug. If all possible tick$_n+1$'s satisfy the assertion then the proof is complete and no known interactions can violate the assertion. \\
 
 In order for this to be a useful validation system, our assertion framework must be expressive, extensible, and easy to use. Our system allows for simple assertions, such as restricting a single numeric variable to a range. We call this a range assertion and it can be used directly to define a valid space in a single dimension. We then have several agregate assertions which are built as a combination of sub-assertions. Continuing the example of spacial assertions, we have what we call a bounding box assertion which combines many range assertions (one per dimension) into an n-dimentional cuboid. We also have generic white-list and black-list aggregate assertions which are true if and only if, respectively, one of or none of its sub-assertions are true. This system is extremely flexilble and can be extended with more simple and aggregate types to assert any number of different behaviours. \\
 
-We are modelling operations in a similar fashion where an operation is composed of simple operation, such as an arithmetic or logic operation, which is then aggregated into a sequence of operations or function. By structuring our operations and assertions in this manner, BAD can quickly be extended to also validate a wide variety of behaviour outside of the scope of spacial assertions which this proof-of-concept is focusing on. \\
+We are modelling operations in a similar fashion where an operation is composed of simple operation, such as an arithmetic or logic operation, which is then aggregated into a sequence of operations or function. By structuring our operations and assertions in this manner, GIVBA can quickly be extended to also validate a wide variety of behaviour outside of the scope of spacial assertions which this proof-of-concept is focusing on. \\
 
 \subsection{Phase Three: Assertion Generation}
 
-This is the stage of BAD where we've not implemented any functionality of yet. Though despite that, we've designed an outline for how we'll approach the problem in the future. Our end goal would to be able to generate a suite of effective assertions that model the intended behaviour of the objects within the game. \\
+This is the stage of GIVBA where we've not implemented any functionality of yet. Though despite that, we've designed an outline for how we'll approach the problem in the future. Our end goal would to be able to generate a suite of effective assertions that model the intended behaviour of the objects within the game. \\
 
-Generation of assertions is the last step for a complete implementation of BAD. Rather than a user needing to provide the assertions for phase two to verify, this phase tries to analyze the provided code to determine things that should be asserted. Some possible assertions can be generated strictly from analyzing the code representing the game object behaviour, but some assertions need greater information. To solve this problem we propose taking additional information about the game world, usually in the form of the object hierarchy and arrangement in the world. Using this information, we're able to seed the model with concrete values instead of it being purely abstract, which can then be used to augment the search for more novel and useful assertions. \\
+Generation of assertions is the last step for a complete implementation of GIVBA. Rather than a user needing to provide the assertions for phase two to verify, this phase tries to analyze the provided code to determine things that should be asserted. Some possible assertions can be generated strictly from analyzing the code representing the game object behaviour, but some assertions need greater information. To solve this problem we propose taking additional information about the game world, usually in the form of the object hierarchy and arrangement in the world. Using this information, we're able to seed the model with concrete values instead of it being purely abstract, which can then be used to augment the search for more novel and useful assertions. \\
 
 Some possible types of assertions we've thought could be good are ones related to collision verification, violating impassable terrain, ensuring correct outcome of object interaction, and other interaction-related correctness issues. Most of these are fundamentally not difficult to specifically find useful information about, but would each require specialized techniques to be developed for. This would make it hard to generalize the technique across assertions to generate, but we're still investigating other possible new approaches to find more general assertions. \\
 
@@ -133,7 +133,7 @@ Unfortunately, \textit{Walk Monster} is the closest thing to a real testing tool
 
 \section{Future Work}
 
-The most pressing piece of future work for BAD is to actually implement a functional version of the third phase: Assertion Generation. This would turn BAD into a complete and actually practically useful piece of software for testing games. Beyond that, there are a number of ideas we have for applying some or all of the components of BAD. Though the ones we think are most interesting are other applications of the model we've designed:
+The most pressing piece of future work for GIVBA is to actually implement a functional version of the third phase: Assertion Generation. This would turn GIVBA into a complete and actually practically useful piece of software for testing games. Beyond that, there are a number of ideas we have for applying some or all of the components of GIVBA. Though the ones we think are most interesting are other applications of the model we've designed:
 
 \begin{itemize}
     \item{\textbf{Performance modeling:}} since the model encodes the way in which any sets of game objects could ever interact, the information could be applied to identify independent computations which could then be parallellized. This has the possibility of dramatically improving the performance of a game that was previously running exclusively in one thread.  
@@ -145,7 +145,7 @@ Aside from those three, an obvious path for future work is to port the system to
 
 \section{Conclusion}
 
-We've shown BAD, our system to attempt to fill the automated testing gap that exists in the game development industry. BAD provides a three-phase system of generating a model, verifying assertions, then generating assertions automatically. We introduced a novel, or at least we think it's novel, model for representing tick-agnostic systems such as games.\\
+We've shown GIVBA, our system to attempt to fill the automated testing gap that exists in the game development industry. GIVBA provides a three-phase system of generating a model, verifying assertions, then generating assertions automatically. We introduced a novel, or at least we think it's novel, model for representing tick-agnostic systems such as games.\\
 
 Most of our work went into designing the backbone architecture for the system as well as designing the specifics of the model. We're hoping that this work helps make it significantly easier to develop and extend the system in the future. After that, the rest of our work went into designing the way in which we'd validate the provided assertions in phase two.
 
