@@ -120,7 +120,13 @@ BAD has the three phases of \textbf{Model Generation}, \textbf{Assertion Validat
 
 \subsection{Phase One: Model Generation}
 
-Our model is a \textbf{tick-agnostic} abstraction of game object \textbf{interaction} representing overall game behaviour. \textbf{Tick-agnostic} is referring to how we model the state of game objects at an arbitrary point in time. By typical design, games have at their core a main loop, 
+Our model is a \textbf{tick-agnostic} abstraction of game object interaction representing overall game behaviour. \textbf{Tick-agnostic} is referring to how we model the state of game objects at an arbitrary point in time. By typical design, games have at their core a main loop running every frame (or \textbf{tick}) where game object code is ran. Standard program analysis tools tend to look at the paths a program can take, a process not well suited to dealing with the heavily loop-based design of games. Our model creates a generic snapshot of how game objects can interact at any point, letting us avoid the key issue.
+
+The model is represented by a dirgraph where nodes represent game objects and edges represent their interaction, annotated with what the interaction is. Stored within a node we have an ID (often simply the class name) as well as references to the incoming and outgoing edges. The specific way we represent interactions between nodes is by the operations one node may apply to another. These edges provide an encoding of how, what, and by who parts of a given game object can ever be affected. 
+
+At a high level, you can think of the graph as representing the state of the game at some arbitrary tick $k$, as opposed to any concrete point in the execution. The nodes can then be thought of as functions, taking all the fields modified by their edges as input, and producing the state at tick $k + 1$ as an output. So by using this, we can apply some, or all, of the possible modifications to a node and then examine generically what would happen as a result. This is the key distinction of our model versus other typical analysis systems.
+
+To create the actual model itself in our reference implementation, we take in game source code compiled to a CIL\endnote{CIL is the Common Intermedeary Language. It's the low-level pseudo-assembly language ran on the .NET platform.} binary, known as an assembly. We utilize the \textit{Mono.Cecil}~\cite{Mono.Cecil} library to load and read the raw CIL.
 
 Here's a typical figure reference.  The figure is centered at the
 top of the column.  It's scaled.  It's explicitly placed.  You'll
@@ -204,7 +210,7 @@ latex usenixTemplate
 Well, it's getting boring isn't it.  This is the last subsection
 before we wrap it up.
 
-\section{Evaluation \& Observations}
+\section{Evaluation \& Observations}CIL2binary
 
 \section{Related Work}
 
@@ -238,9 +244,14 @@ We've preserved some real ones in addition to the template-speak.
 After the bibliography you are DONE.
 
 \begin{thebibliography}{9}
-\bibitem{WalkMonster}
-Casey Muratori\\
-\texttt{https://caseymuratori.com/blog\_0005}
+    \bibitem{WalkMonster}
+    Casey Muratori\\
+    \texttt{https://caseymuratori.com/blog\_0005}
+
+    \bibitem{Mono.Cecil}
+    Jb Evain\\
+    Mono Project\\
+    \texttt{https://www.mono-project.com/docs/tools+libraries/libraries/Mono.Cecil/}
 \end{thebibliography}
 
 % \begin{bibliography}
