@@ -75,11 +75,6 @@ BAD is based around creating a tick-agnostic model of game object interactions t
 
 We've created a proof-of-concept implementation of BAD in C\#, targeting the Unity game engine. We use .NET Core as the runtime for the system, so it can be used cross-platform. Currently the system performs effective generation of the model and basic analysis of assertions. The assertion generation phase of the system is still being designed, but we have a solid design plan laid out for when the time comes.
 
-A paragraph of text goes here.  Lots of text.  Plenty of interesting
-text. 
-
-More fascinating text. Features\endnote{Remember to use endnotes, not footnotes!} galore, plethora of promises.
-
 \section{Background}
 
 The game development industry has yet to fully embrace automated testing and to this day, game testing remains a very hands-on labour intensive process. Manual testing of video games is slow, expensive, and results in poor coverage of the total game state space. As an extreme, yet real world, example, there is still a job in which someone is paid to spend hundreds of hours bumping into walls to test collisions. The current state of the video game testing is ripe for improvements. Automation would bring much needed efficiency to the industry.
@@ -126,24 +121,7 @@ The model is represented by a dirgraph where nodes represent game objects and ed
 
 At a high level, you can think of the graph as representing the state of the game at some arbitrary tick $k$, as opposed to any concrete point in the execution. The nodes can then be thought of as functions, taking all the fields modified by their edges as input, and producing the state at tick $k + 1$ as an output. So by using this, we can apply some, or all, of the possible modifications to a node and then examine generically what would happen as a result. This is the key distinction of our model versus other typical analysis systems.
 
-To create the actual model itself in our reference implementation, we take in game source code compiled to a CIL\endnote{CIL is the Common Intermedeary Language. It's the low-level pseudo-assembly language ran on the .NET platform.} binary, known as an assembly. We utilize the \textit{Mono.Cecil}~\cite{Mono.Cecil} library to load and read the raw CIL.
-
-Here's a typical figure reference.  The figure is centered at the
-top of the column.  It's scaled.  It's explicitly placed.  You'll
-have to tweak the numbers to get what you want.\\
-
-% you can also use the wonderful epsfig package...
-\begin{figure}[t]
-\begin{center}
-\begin{picture}(300,150)(0,200)
-\put(-15,-30){\special{psfile = fig1.ps hscale = 50 vscale = 50}}
-\end{picture}\\
-\end{center}
-\caption{Wonderful Flowchart}
-\end{figure}
-
-This text came after the figure, so we'll casually refer to Figure 1
-as we go on our merry way.
+To create the actual model itself in our reference implementation, we take in game source code compiled to a CIL\endnote{CIL is the Common Intermedeary Language. It's the low-level pseudo-assembly language ran on the .NET platform.} binary, known as an assembly. We utilize the \textit{Mono.Cecil}~\cite{Mono.Cecil} library to load and read the raw CIL. From there we identify game objects (in this case classes) to create nodes of, then search for and identify idioms within the code which correspond to affecting another game object. The actual operations applied by the effect are then encoded onto the edge between the nodes and its annotation. 
 
 \subsection{Phase Two: Assertion Verification}
 
