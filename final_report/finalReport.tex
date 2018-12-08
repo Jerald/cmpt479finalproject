@@ -55,7 +55,7 @@ Simon Fraser University
 
 \subsection*{Abstract}
 
-Game development is a very large section of the software development industry, but there is little to no work done on automated testing for games. To attempt to fix that we introduce BAD: three-phase system building a tick-agnostic model of game behaviour used to verify and eventually generate assertions about correctness. \\
+Game development is a very large section of the software development industry, but there is little to no work done on automated testing for games. To attempt to fix that we introduce BAD: a three-phase system building a tick-agnostic model of game behaviour used to verify and eventually generate assertions about correctness. \\
 
 \section{Introduction}
 
@@ -69,7 +69,7 @@ BAD is based around creating a tick-agnostic model of game object interactions t
 
 \begin{enumerate}
     \item{\textbf{Model Generation:}} by analyzing the code of a game we abstract away game objects to simply their name, modifiable fields, and the ways they interact with other objects. 
-    \item {\textbf{Assertion Verification:}} using the model generated in phase 1 along with assertions provided to the system, we apply a type of inductive proof to see if the assertions are upheld, or how they could be invalidated.
+    \item {\textbf{Assertion Verification:}} using the model generated in phase one along with assertions provided to the system, we apply a type of inductive proof to see if the assertions are upheld, or how they could be invalidated.
     \item{\textbf{Assertion Generation:}} by taking in information about the layout of a game (say, level information) and combining it with the generated model, the system will look for types of idiomatic mistakes and symptomatic designs which should be checked for correctness.
 \end{enumerate}
 
@@ -80,7 +80,7 @@ We've created a proof-of-concept implementation of BAD in C\#, targeting the Uni
 The game development industry has yet to fully embrace automated testing and to this day, game testing remains a very hands-on labour intensive process. Manual testing of video games is slow, expensive, and results in poor coverage of the total game state space. As an extreme, yet real world, example, there is still a job in which someone is paid to spend hundreds of hours bumping into walls to test collision. The current state of video game testing is ripe for improvements. Automation would bring much needed efficiency to the industry. \\
 
 %TODO
-A noteworthy example of automated game testing is the \textit{Walk Monster}~\cite{WalkMonster} exploration tool which was written for \textit{The Witness}. 
+A noteworthy example of automated game testing is the \textit{Walk Monster}~\cite{WalkMonster} exploration tool which was written for \textit{The Witness}. This is something we'll discuss in further detail in the \textbf{Related Work} section.
 
 \section{Approach}
 
@@ -88,13 +88,13 @@ BAD has the three phases of \textbf{Model Generation}, \textbf{Assertion Validat
 
 \subsection{Phase One: Model Generation}
 
-Our model is a \textbf{tick-agnostic} abstraction of game object interaction representing overall game behaviour. \textbf{Tick-agnostic} is referring to how we model the state of game objects at an arbitrary point in time. By typical design, games have at their core a main loop running every frame (or \textbf{tick}) where game object code is ran. Standard program analysis tools tend to look at the paths a program can take, a process not well suited to dealing with the heavily loop-based design of games. Our model creates a generic snapshot of how game objects can interact at any point, letting us avoid the key issue. \\
+Our model is a \textbf{tick-agnostic} abstraction of game object interaction representing overall game behaviour. \textbf{Tick-agnostic} is referring to how we model the state of game objects at an arbitrary point in time. By typical design, games have at their core a main loop running every frame (or \textbf{tick}) where game object code is ran. Standard program analysis tools tend to look at the paths a program can take, a process not well suited to dealing with the heavily loop-based design of games. Our model creates a generic snapshot of how game objects can interact at any point, letting us avoid this key issue. \\
 
 The model is represented by a dirgraph where nodes represent game objects and edges represent their interaction, annotated with what the interaction is. Stored within a node we have an ID (often simply the class name) as well as references to the incoming and outgoing edges. The specific way we represent interactions between nodes is by the operations one node may apply to another. These edges provide an encoding of how, what, and by who parts of a given game object can ever be affected. \\
 
-At a high level, you can think of the graph as representing the state of the game at some arbitrary tick $k$, as opposed to any concrete point in the execution. The nodes can then be thought of as functions, taking all the fields modified by their edges as input, and producing the state at tick $k + 1$ as an output. So by using this, we can apply some, or all, of the possible modifications to a node and then examine generically what would happen as a result. This is the key distinction of our model versus other typical analysis systems. \\
+At a high level, you can think of the graph as representing the state of the game at some abstract tick $k$, as opposed to any concrete point in the execution. The nodes can then be thought of as functions, taking all the fields modified by their edges as input, and producing the state at tick $k + 1$ as an output. So by using this, we can apply some, or all, of the possible modifications to a node and then examine generically what would happen as a result. This is the key distinction of our model versus other typical analysis systems. \\
 
-To create the actual model itself in our reference implementation, we take in game source code compiled to a CIL\endnote{CIL is the Common Intermedeary Language. It's the low-level pseudo-assembly language ran on the .NET platform.} binary, known as an assembly. We utilize the \textit{Mono.Cecil}~\cite{Mono.Cecil} library to load and read the raw CIL. From there we identify game objects (in this case classes) to create nodes of, then search for and identify idioms within the code which correspond to affecting another game object. The actual operations applied by the effect are then encoded onto the edge between the nodes and its annotation. \\
+To create the actual model itself in our reference implementation, we take in game source code compiled to a CIL\endnote{CIL is the Common Intermedeary Language. It's the low-level pseudo-assembly language ran on the .NET platform.} binary, known as an assembly. We utilize the \textit{Mono.Cecil}~\cite{Mono.Cecil} library to load and read the raw CIL. From there we identify game objects (in this case classes) to create nodes of then search for and identify idioms within the code which correspond to affecting another game object. The actual operations applied by the effect are then encoded onto the edge between the nodes and its annotation. \\
 
 \subsection{Phase Two: Assertion Verification}
 
@@ -109,9 +109,9 @@ In order for this to be a useful validation system, our assertion framework must
 
 \subsection{Phase Three: Assertion Generation}
 
-This is the stage of BAD where we've not implemented any functionality yet. Though despite that, we've designed an outline for how we'll approach the problem in the future. Our end goal would to be able to generate a suite of effective assertions that model the intended behaviour of the objects within the game. \\
+This is the stage of BAD where we've not implemented any functionality of yet. Though despite that, we've designed an outline for how we'll approach the problem in the future. Our end goal would to be able to generate a suite of effective assertions that model the intended behaviour of the objects within the game. \\
 
-Generation of assertions is the last step for a complete implementation of BAD. Rather than a user needing to provide the assertions for phase two to verify, this phase tried to analyze the provided code to determine things that should be asserted. Some possible assertions can be generated strictly from analyzing the code representing the game object behaviour, but some assertions need greater information. To solve this problem we propose taking additional information about the game world, usually in the form of the object hierarchy and arrangement in the world. Using this information, we're able to seed the model with concrete values instead of it being purely abstract, which can then be used to augment the search for more novel and useful assertions. \\
+Generation of assertions is the last step for a complete implementation of BAD. Rather than a user needing to provide the assertions for phase two to verify, this phase tries to analyze the provided code to determine things that should be asserted. Some possible assertions can be generated strictly from analyzing the code representing the game object behaviour, but some assertions need greater information. To solve this problem we propose taking additional information about the game world, usually in the form of the object hierarchy and arrangement in the world. Using this information, we're able to seed the model with concrete values instead of it being purely abstract, which can then be used to augment the search for more novel and useful assertions. \\
 
 Some possible types of assertions we've thought could be good are ones related to collision verification, violating impassable terrain, ensuring correct outcome of object interaction, and other interaction-related correctness issues. Most of these are fundamentally not difficult to specifically find useful information about, but would each require specialized techniques to be developed for. This would make it hard to generalize the technique across assertions to generate, but we're still investigating other possible new approaches to find more general assertions. \\
 
@@ -119,31 +119,31 @@ Some possible types of assertions we've thought could be good are ones related t
 
 Unfortunately evaluation of our system is difficult for a number of reasons. Firstly, there's the problem that it's not entirely functional to a degree where it can be evaluated wholesale. Secondly, there's the issue that no real other work exists to compare ourselves to. \\
 
-In terms of what practical outcomes we have so far, we have lots of solid and interesting results from generation of the model. We've been able to detect both the usage of fields and the calling of methods on a given class. Combining this with detecting the existence of the classes, and, well, we've got our model. This is interesting in its own right since looking at the outputted information is actually quite insightful and interesting to look at. \\
+In terms of what practical outcomes we have so far, we have lots of solid and interesting results from generation of the model. We've been able to detect both the usage of fields and the calling of methods on a given class. Combining this with detecting the existence of the classes, and, well, we've got our model. This is interesting in its own right, since looking at the outputted information is actually quite insightful and interesting to look at. \\
 
-Other interesting observations from our system has been actually how efficient it's been to do our analysis. Albeit we've mostly been running our system on small samples, but we've also not optimized any aspect of our analysis and in fact designed a few things in ways that are far less optimal than they could be. Combined, it's still quite interesting that the actual runtime has only a marginally increased runtime when compared to the overhead from just the .NET runtime. \\
+Other observations from our system have been actually how efficient it's been to do our analysis. Although we've mostly been running our system on small samples, we've also not optimized any aspect of our analysis and in fact designed a few things in ways that are far less optimal than they could be. Combined, it's still quite interesting that the actual full analysis has only a marginally increased run time when compared to the overhead from just the .NET runtime itself. \\
 
 \section{Related Work}
 
 As mentioned before, \textit{Walk Monster}~\cite{WalkMonster} was a tool written to assist in testing of \textit{The Witness}. It was a system which used the built-in player movement system of the game, but automatically attempted to traverse as much of the world as possible. It did this by using a variety of different approaches to deciding direction and ensuring world coverage. The final result was visual map of the places the player could move. This resulted in finding a number of geometry mistakes that would've detracted from the overall game experience.\\
 
-Unfortunately, \textit{Walk Monster} is the closest thing to a real testing tool that we've been able to find that exists for games. The rest of the work seems to have been dedicated to doing what is essentially linting: analyzing source code to look for code smell and other possible red flags. There is a high possibility that a number of the larger game studios around the world have some form of testing framework internally, but considering the sheer lack of any literature referencing their possible existence, we cannot assume any practical capabilities from them.\\
+Unfortunately, \textit{Walk Monster} is the closest thing to a real testing tool that we've been able to find that exists for games. The rest of the work seems to have been dedicated to doing what is essentially linting: analyzing source code to look for code smell and other possible red flags. There is also a high possibility that a number of the larger game studios around the world have some form of testing framework internally, but considering the sheer lack of any literature referencing their possible existence, we cannot assume any practical capabilities for them.\\
 
 \section{Future Work}
 
 The most pressing piece of future work for BAD is to actually implement a functional version of the third phase: Assertion Generation. This would turn BAD into a complete and actually practically useful piece of software for testing games. Beyond that, there are a number of ideas we have for applying some or all of the components of BAD. Though the ones we think are most interesting are other applications of the model we've designed:
 
 \begin{itemize}
-    \item{\textbf{Performance modeling:}} since the model encodes the way in which any sets of game objects could every interact, the information could be applied to identify independent computations which could then be parallellized. This has the possibility of dramatically improving the performance of a game that was previously running exclusively in one thread.  
+    \item{\textbf{Performance modeling:}} since the model encodes the way in which any sets of game objects could ever interact, the information could be applied to identify independent computations which could then be parallellized. This has the possibility of dramatically improving the performance of a game that was previously running exclusively in one thread.  
     \item {\textbf{Providing a viewable version of the model:}} simply providing a way for a developer to render and view the generated model could be useful for development. By representing actions between objects in a more visual and informative way, poor design could be identified and fixed earlier and more effectively than otherwise.
     \item{\textbf{Optimization and code design suggestions:}} by knowing exactly how code interacts, the model can show otherwise invisible situations where code is called too often, or where it could benefit from a common abstraction. We'd propose a very similar fundamental design as assertion generation, but focusing on developer feedback instead of game restrictions.
 \end{itemize}
 
-Aside from that, a obvious path for future work is to port the system to other game engines and development environments. This would allow the system to be used by a broader audience and to possibly inspire more automated testing tools for game development.
+Aside from those three, an obvious path for future work is to port the system to other game engines and development environments. This would allow the system to be used by a broader audience and to possibly inspire more automated testing tools for game development.
 
 \section{Conclusion}
 
-We've shown BAD, our system to attempt to fill the automated testing gap that exists in the game development industry. BAD provides a three-phase system of generating a model, verifying assertions, then generating assertions automatically. We introduced a novel, or at least we think it is, model for representing tick-agnostic systems such as games.\\
+We've shown BAD, our system to attempt to fill the automated testing gap that exists in the game development industry. BAD provides a three-phase system of generating a model, verifying assertions, then generating assertions automatically. We introduced a novel, or at least we think it's novel, model for representing tick-agnostic systems such as games.\\
 
 Most of our work went into designing the backbone architecture for the system as well as designing the specifics of the model. We're hoping that this work helps make it significantly easier to develop and extend the system in the future. After that, the rest of our work went into designing the way in which we'd validate the provided assertions in phase two.
 
