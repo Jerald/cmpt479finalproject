@@ -100,48 +100,7 @@ To create the actual model itself in our reference implementation, we take in ga
 Our assertion verification system is conducted as a series of inductive proofs. To test a given assertion, we first extract all of the variables which the assertion applies to. We then look up all of the operations which can be performed on these variables in the model from phase one. This set encompasses all mutations that can be performed on the given variables within one game tick. This will form the basis of our inductive proof. To avoid a state explosion, we conduct this proof on the abstract domain such that the assertion is true. For example if the assertion we are testing is that the player's $x$ coordinate is between 0 and 10, our abstract domain defines $x_{abstract}$ as true or false according to the expression:
 \begin{displaymath}x_{abstract}~=~(x_{concrete}\geq0)~\&\&~(x_{concrete}\leq10)
 \end{displaymath}
-The base case of our induction 
-
-It can get tricky typesetting Tcl and C code in LaTeX because they share
-a lot of mystical feelings about certain magic characters.  You
-will have to do a lot of escaping to typeset curly braces and percent
-signs, for example, like this:
-``The {\tt \%module} directive
-sets the name of the initialization function.  This is optional, but is
-recommended if building a Tcl 7.5 module.
-Everything inside the {\tt \%\{, \%\}}
-block is copied directly into the output. allowing the inclusion of
-header files and additional C code." \\
-
-Sometimes you want to really call attention to a piece of text.  You
-can center it in the column like this:
-\begin{center}
-{\tt \_1008e614\_Vector\_p}
-\end{center}
-and people will really notice it.\\
-
-\noindent
-The noindent at the start of this paragraph makes it clear that it's
-a continuation of the preceding text, not a new para in its own right.
-
-
-Now this is an ingenious way to get a forced space.
-{\tt Real~$*$} and {\tt double~$*$} are equivalent. 
-
-Now here is another way to call attention to a line of code, but instead
-of centering it, we noindent and bold it.\\
-
-\noindent
-{\bf \tt size\_t : fread ptr size nobj stream } \\
-
-And here we have made an indented para like a definition tag (dt)
-in HTML.  You don't need a surrounding list macro pair.
-\begin{itemize}
-\item[]  {\tt fread} reads from {\tt stream} into the array {\tt ptr} at
-most {\tt nobj} objects of size {\tt size}.   {\tt fread} returns
-the number of objects read. 
-\end{itemize}
-This concludes the definitions tag.
+The base case of our induction is to show that the abstract domain is true at tick zero, the time of scene creation. 
 
 \subsection{Phase Three: Assertion Generation}
 
